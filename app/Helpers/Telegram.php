@@ -25,12 +25,51 @@ class Telegram
 
     }
 
-    public function sendGanres($chat_id,$content)
+    public function sendGanres($chat_id,$content,$buttons)
     {
-       return Http::post(self::TM_URL.$this->tm_api_key.'/sendMessage',['chat_id'=>$chat_id,
+       return Http::post(self::TM_URL.$this->tm_api_key.'/sendMessage',[
 
-        'text' => $content,
-        'parse_mode' => 'html'
+           'chat_id'=>$chat_id,
+           'text' => $content,
+           'reply_markup' => $buttons
+
+        ]);
+    }
+
+    public function sendMovie($chat_id,$image,$content)
+    {
+        return Http::post(self::TM_URL.$this->tm_api_key.'/sendPhoto',[
+
+            'chat_id'=>$chat_id,
+            'photo' => $image,
+            'caption' => $content,
+            'parse_mode'=>'html'
+
+
+        ]);
+    }
+
+    public function nothingFound($chat_id)
+    {
+        return Http::post(self::TM_URL.$this->tm_api_key.'/sendAnimation',[
+
+            'chat_id'=>$chat_id,
+            'animation' => 'https://c.tenor.com/lx2WSGRk8bcAAAAC/pulp-fiction-john-travolta.gif',
+            'caption' => 'Bunu yoxla:',
+            'reply_markup' => [
+                'resize_keyboard' => true,
+
+                'inline_keyboard'=>[
+                    [
+                        [
+                            'text' => '🎥 Janrlar',
+                            'callback_data' => '/start'
+                        ]
+
+                    ]
+                ]
+            ]
+
 
         ]);
     }

@@ -20,5 +20,5 @@ use Illuminate\Support\Facades\Route;
 });*/
 
 Route::post('/tm-answer', [\App\Http\Controllers\MovieController::class,'tmBotAnswers'])->name('tmBotAnswers');
-Route::get('/form',[\App\Http\Controllers\MovieController::class,'forTest']);
+Route::get('/test',[\App\Http\Controllers\MovieController::class,'forTest']);
 
