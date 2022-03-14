@@ -155,7 +155,7 @@ class MovieController extends Controller
 
     }
 
-    public function tmBotAnswers(Telegram $telegram,Request $request)
+    public function tmBotAnswers(Telegram $telegram)
     {
         $data = json_decode(file_get_contents('php://input'),1);
         $buttons = $this->getButtons();
@@ -179,7 +179,7 @@ class MovieController extends Controller
             $movie = self::getMovie(27);
             $movie_image = 'https://image.tmdb.org/t/p/original'.$movie['poster_path'];
 
-            $content = 'Filmin janrın seçin';
+            $content = 'Filmin janrını seçin';
 
             $telegram->sendGanres($chat_id,$content,json_encode($buttons));
 
