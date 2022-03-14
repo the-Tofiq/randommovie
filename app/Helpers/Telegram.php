@@ -31,18 +31,43 @@ class Telegram
 
            'chat_id'=>$chat_id,
            'text' => $content,
+           'parse_mode'=>'html',
            'reply_markup' => $buttons
 
         ]);
     }
 
-    public function sendMovie($chat_id,$image,$content)
+    public function sendMovie($chat_id,$image,$content,$tr_link,$ru_link)
     {
         return Http::post(self::TM_URL.$this->tm_api_key.'/sendPhoto',[
 
             'chat_id'=>$chat_id,
             'photo' => $image,
             'caption' => $content,
+            'reply_markup' => [
+                'resize_keyboard' => true,
+
+                'inline_keyboard'=>[
+                    [
+                        [
+                            'text' => 'Türk dilində',
+                            'url' => $tr_link
+                        ],
+                        [
+                            'text' => 'Rus dilində',
+                            'url' => $ru_link
+                        ]
+
+                    ],
+                    [
+                        [
+                            'text' => 'Digər film gəlsin',
+                            'callback_data' => 'start'
+                        ]
+
+                    ]
+                ]
+            ],
             'parse_mode'=>'html'
 
 

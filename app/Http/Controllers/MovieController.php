@@ -134,8 +134,8 @@ class MovieController extends Controller
     // GET MOVIES LIST BY TMDB API AND RETURN RANDOM ONE
     public function getMovie($genre_id = null)
     {
-
-        $movies_by_genre = 'https://api.themoviedb.org/3/discover/movie?api_key='.config('api_keys.tmdb_key').'&with_genres=27&language=en-US';
+        $page = rand(1,500);
+        $movies_by_genre = 'https://api.themoviedb.org/3/discover/movie?api_key='.config('api_keys.tmdb_key').'&with_genres='.$genre_id.'&page='.$page.'&language=en-US';
 
         /*$ch = curl_init();
         curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
@@ -176,19 +176,25 @@ class MovieController extends Controller
         if ($user_message == '/start' || $user_message == 'start' || $callback_data == '/start' || $callback_data == 'start') {
 
 
-            $content = 'genres';
+            $movie = self::getMovie(27);
+            $movie_image = 'https://image.tmdb.org/t/p/original'.$movie['poster_path'];
+
+            $content = 'Filmin janrın seçin';
+
             $telegram->sendGanres($chat_id,$content,json_encode($buttons));
 
         } elseif (array_key_exists($user_message,GENRES) || in_array($user_message,GENRES,true) || array_key_exists($callback_data,GENRES) || in_array($callback_data,GENRES,true)){
+
             $movie = self::getMovie($user_message);
             $movie_image = 'https://image.tmdb.org/t/p/original'.$movie['poster_path'];
+            $tr_link = 'https://www.fullhdfilmizlesene.pw/arama/'.str_replace(" ","%",$movie["title"]);
+            $ru_link = 'https://filmix.ac/search/'.str_replace(" ","%",$movie["title"]);
+            $content = (string) view('movie_details',compact('movie'));
 
-            $content = '<li>Adı: </li>'.$movie['title'].'
-            <li>Tarix: </li>'.$movie['release_date'].'
+            $telegram->sendMovie($chat_id,$movie_image,$content,$tr_link,$ru_link);
 
-            ';
-                $telegram->sendMovie($chat_id,$movie_image,$content);
         }else {
+
             $telegram->nothingFound($chat_id);
 
         }
@@ -199,7 +205,7 @@ class MovieController extends Controller
 
     public function forTest()
     {
-        $movie = self::getMovie(27);
+        $movie = self::getMovie(14);
         echo $movie["title"]; echo '<br>';
         var_dump($movie);
 
@@ -220,22 +226,6 @@ class MovieController extends Controller
 
             ]
         ];*/
-
-         /*foreach ($ds as $d){
-             echo '<br>';
-            echo '[';
-            foreach ($d as $k => $v)
-            {
-                echo '<br>';
-                echo '[';
-                echo "'text' => '".$v."'";
-                echo "'callback_data' => '".$k."'";
-                echo ']';
-                echo '<br>';
-            }
-            echo ']';
-            echo '<br>';
-        }*/
 
         /*$arr_main = [];
         $arr_in = [];
