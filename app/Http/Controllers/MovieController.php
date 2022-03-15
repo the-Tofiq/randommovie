@@ -132,7 +132,7 @@ class MovieController extends Controller
     }
 
     // GET MOVIES LIST BY TMDB API AND RETURN RANDOM ONE
-    public function getMovie($genre_id = null)
+    public function getMovie($genre_id)
     {
         $page = rand(1,500);
         $movies_by_genre = 'https://api.themoviedb.org/3/discover/movie?api_key='.config('api_keys.tmdb_key').'&with_genres='.$genre_id.'&page='.$page.'&language=en-US';
@@ -157,33 +157,33 @@ class MovieController extends Controller
 
     public function tmBotAnswers(Telegram $telegram)
     {
-        $data = json_decode(file_get_contents('php://input'),1);
+        $data = json_decode(file_get_contents("php://input"),1);
         $buttons = $this->getButtons();
 
         if(isset( $data['callback_query'])) {
-            $user_message = null;
-            $callback_data = $data['callback_query']['data'];
+           // $user_message = null;
+            $user_message = $data['callback_query']['data'];
             $chat_id = $data['callback_query']['message']['chat']['id'];
 
-        }else{
+        }elseif(isset( $data['message'])){
             $user_message = mb_strtolower($data['message']['text']);
             $chat_id = $data['message']['chat']['id'];
-            $callback_data = null;
+            //$callback_data = null;
+        }else{
+            $user_message = 'start';
+            $chat_id = config('api_keys.tm_my_id');
         }
-        Log::debug($data);
+       // Log::debug($data);
 
 
-        if ($user_message == '/start' || $user_message == 'start' || $callback_data == '/start' || $callback_data == 'start') {
+        if ($user_message == '/start' || $user_message == 'start' ) {
 
-
-            $movie = self::getMovie(27);
-            $movie_image = 'https://image.tmdb.org/t/p/original'.$movie['poster_path'];
 
             $content = 'Filmin janrını seçin';
 
             $telegram->sendGanres($chat_id,$content,json_encode($buttons));
 
-        } elseif (array_key_exists($user_message,GENRES) || in_array($user_message,GENRES,true) || array_key_exists($callback_data,GENRES) || in_array($callback_data,GENRES,true)){
+        } elseif (array_key_exists($user_message,GENRES) || in_array($user_message,GENRES,true)){
 
             $movie = self::getMovie($user_message);
             $movie_image = 'https://image.tmdb.org/t/p/original'.$movie['poster_path'];
@@ -205,9 +205,10 @@ class MovieController extends Controller
 
     public function forTest()
     {
-        $movie = self::getMovie(14);
+
+       /* $movie = self::getMovie(14);
         echo $movie["title"]; echo '<br>';
-        var_dump($movie);
+        var_dump($movie);*/
 
         /*$ganres = array_chunk(GENRES,3,true);
         $arraysMerged = [];

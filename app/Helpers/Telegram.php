@@ -31,7 +31,6 @@ class Telegram
 
            'chat_id'=>$chat_id,
            'text' => $content,
-           'parse_mode'=>'html',
            'reply_markup' => $buttons
 
         ]);

@@ -13,12 +13,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//Route::get('/set-hook', [\App\Http\Controllers\MovieController::class,'tmSetTHook']);
-/*Route::get('/hook', function (){
-    $return =  \Illuminate\Support\Facades\Http::post( 'https://api.telegram.org/bot'.config('api_keys.tm_api_key').'/getWebhookInfo');
-    dd(json_decode($return->body()));
-});*/
-
 Route::post('/tm-answer', [\App\Http\Controllers\MovieController::class,'tmBotAnswers'])->name('tmBotAnswers');
 Route::get('/test',[\App\Http\Controllers\MovieController::class,'forTest']);
 
